@@ -10,6 +10,7 @@ const PowerBiReportDetails = require(__dirname + "/../models/embedReportConfig.j
 const PowerBiDashboardDetails = require(__dirname + "/../models/embedDashboardConfig.js");
 const EmbedConfig = require(__dirname + "/../models/embedConfig.js");
 const EmbedConfigDashboard = require(__dirname + "/../models/embedConfigDashboard.js");
+
 const fetch = require('node-fetch');
 /**
  * Generate embed token and embed urls for reports
@@ -24,9 +25,11 @@ async function getEmbedInfo() {
         const embedParams = await getEmbedParamsForSingleReport(config.workspaceId, config.reportId);
 
         //Print app paages in report
-        getReportPages(config.workspaceId,config.reportId).then(function(result){
-            console.log(result);
-        })
+        // getReportPages(config.workspaceId,config.reportId).then(function(result){
+        //     console.log(result);
+        // })
+       
+        
        
         return {
             'accessToken': embedParams.embedToken.token,
@@ -150,7 +153,7 @@ async function getEmbedParamsForMultipleReports(workspaceId, reportIds, addition
  * @param {string} targetWorkspaceId - Optional Parameter
  * @return EmbedToken
  */
-async function getEmbedTokenForSingleReportSingleWorkspace(reportId, datasetIds, targetWorkspaceId) {
+async function getEmbedTokenForSingleReportSingleWorkspace(reportId, datasetIds, targetWorkspaceId, identity = {roles:['PetsPlace Viewer']}) {
 
     // Add report id in the request
     let formData = {
@@ -176,12 +179,15 @@ async function getEmbedTokenForSingleReportSingleWorkspace(reportId, datasetIds,
     }
      //Add Effective Identity 
     
+    // user = []
+    // UserAccess.getUserAccess().then(function(result){
+    //     user = result;
+    // })
+
     formData['identities'] = [];
         formData['identities'].push({
             'username':'First@gmbapi.com',
-            'roles':[
-                'PetsPlaceViewer'
-            ],
+            'roles':identity.roles,
             'datasets':datasetIds
         })
     
